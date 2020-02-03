@@ -3,7 +3,7 @@ USE IEEE.STD_LOGIC_1164.ALL;
 
 ENTITY leddec IS
 	PORT (
-		dig : IN STD_LOGIC_VECTOR (2 DOWNTO 0);
+		dig : IN STD_LOGIC_VECTOR (1 DOWNTO 0);
 		data : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
 		displays : OUT STD_LOGIC_VECTOR (41 DOWNTO 0)
 		--seg : OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
@@ -41,19 +41,14 @@ BEGIN
 	-- Turn on 1 of 6 7-segment display addressed by 3-bit digit selector dig for Terasic DE0-CV
 process(dig)
 begin
-		if (dig = "000") then 
+		if (dig = "00") then 
 		   displays (41 DOWNTO 35) <= seg;
-		elsif (dig = "001") then
+		elsif (dig = "01") then
 			displays (34 DOWNTO 28) <= seg;
-		elsif (dig = "010") then
+		elsif (dig = "10") then
 			displays (27 DOWNTO 21) <= seg;
-		elsif (dig = "110") then--011 is translated to 110 why? 110 is 011 and 011 is 110?
+		else
 			displays (20 DOWNTO 14) <= seg;
-		elsif (dig = "100") then
-			displays (13 DOWNTO 7) <= seg;
-		elsif (dig = "101") then
-			displays (6 DOWNTO 0) <= seg;
-		else 
 		end if;
 end process;
 END Behavioral;

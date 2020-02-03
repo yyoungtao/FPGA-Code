@@ -1,37 +1,61 @@
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
+-- hexcount.vhd --
 
-ENTITY hexcount IS
-	PORT (
-		clk_50MHz : IN STD_LOGIC;
-		--anode : OUT STD_LOGIC_VECTOR (4 DOWNTO 0);
-		displays : OUT STD_LOGIC_VECTOR (41 DOWNTO 0);
-		--seg : OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
-		swt: IN STD_LOGIC_VECTOR (2 DOWNTO 0)
-	);
-END hexcount;
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
 
-ARCHITECTURE Behavioral OF hexcount IS
-	COMPONENT counter IS
-		PORT (
-			clk : IN STD_LOGIC;
-			count : OUT STD_LOGIC_VECTOR (3 DOWNTO 0)
-		);
-	END COMPONENT;
-	COMPONENT leddec IS
-		PORT (
-			dig : IN STD_LOGIC_VECTOR (2 DOWNTO 0);
-			data : IN STD_LOGIC_VECTOR (3 DOWNTO 0);
-			--anode : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);
-			--seg : OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
-			displays : OUT STD_LOGIC_VECTOR (41 DOWNTO 0)
-		);
-	END COMPONENT;
-	SIGNAL S : STD_LOGIC_VECTOR (3 DOWNTO 0);
-BEGIN
-	C1 : counter
-	PORT MAP(clk => clk_50MHz, count => S);
-	L1 : leddec
-	--PORT MAP(dig => "00", data => S, anode => anode, seg => seg);
-	PORT MAP(dig => swt, data => S, displays => displays);
-END Behavioral;
+entity hexcount is
+	Port ( clk_50MHz : in STD_LOGIC;
+				  --anode : out STD_LOGIC_VECTOR (3 downto 0);
+					 --seg : out STD_LOGIC_VECTOR (6 downto 0)
+					 displays : OUT STD_LOGIC_VECTOR (41 DOWNTO 0)
+					 );
+end hexcount;
+
+architecture Behavioral of hexcount is
+
+component counter is
+	Port ( clk : in STD_LOGIC;
+			 count : out STD_LOGIC_VECTOR (15 downto 0); --NEED CHANGE! counter now output 16 bits for all 4 displays
+			 mpx   : out STD_LOGIC_VECTOR (1 downto 0));
+end component;
+
+component leddec is
+	Port ( dig : in STD_LOGIC_VECTOR (1 downto 0);
+			 data : in STD_LOGIC_VECTOR (3 downto 0); --DONT change, data is fixed 4 bits in leddec for each displays
+			 --anode: out STD_LOGIC_VECTOR (3 downto 0);
+			 --seg : out STD_LOGIC_VECTOR (6 downto 0)
+			 displays : OUT STD_LOGIC_VECTOR (41 DOWNTO 0)
+			 );
+end component;
+
+signal S: STD_LOGIC_VECTOR (15 downto 0); -- connect C1 and L1 for values of 4 digits
+signal md: STD_LOGIC_VECTOR (1 downto 0); -- mpx selects displays
+signal display: STD_LOGIC_VECTOR (3 downto 0); -- send digit for only one display to leddec
+
+begin
+C1: counter port map (clk=>clk_50MHz, count=>S, mpx=>md);
+--L1: leddec port map(dig=>md, data=>display, anode=>anode, seg=>seg);
+L1: leddec port map(dig=>md, data=>display, displays=>displays);
+
+
+
+--mpx
+--process(md)
+--begin
+--	if md = "00" then
+--		display <= S(3 downto 0);
+--	elsif md = "01" then
+--		display <= S(7 downto 4);
+--	elsif md = "10" then
+--		display <= S(11 downto 8);
+--	elsif md = "11" then
+--		display <= S(15 downto 12);
+--	end if;
+--end process;
+
+display <= S(3 downto 0) when md = "00" else
+           S(7 downto 4) when md = "01" else
+			  S(11 downto 8) when md = "10" else
+			  S(15 downto 12);
+
+end Behavioral;
