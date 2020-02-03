@@ -1,0 +1,20 @@
+#red
+set_location_assignment PIN_A9 -to vga_red[0]
+set_location_assignment PIN_B10 -to vga_red[1]
+set_location_assignment PIN_C9 -to vga_red[2]
+set_location_assignment PIN_A5 -to vga_red[3]
+
+#green
+set_location_assignment PIN_L7 -to vga_green[41]
+set_location_assignment PIN_K7 -to vga_green[40]
+set_location_assignment PIN_J8 -to vga_green[39]
+
+#blue
+set_location_assignment PIN_B6 -to vga_blue[41]
+set_location_assignment PIN_B7 -to vga_blue[40]
+set_location_assignment PIN_A7 -to vga_blue[39]
+
+set_location_assignment PIN_H8 -to vga_hsync
+set_location_assignment PIN_G8 -to vga_vsync
+
+set_location_assignment PIN_M9 -to clk_50MHz
